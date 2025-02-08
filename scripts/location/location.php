@@ -1,6 +1,6 @@
 <?php
-// Configuration
-$google_api_key = 'AIzaSyAuVXA62gxQgGtLg7jEf0hQnFgYHzxJO48'; // Replace with your actual API key
+// this is only the map. No other feature
+$google_api_key = 'AIzaSyAuVXA62gxQgGtLg7jEf0hQnFgYHzxJO48'; 
 ?>
 
 <!DOCTYPE html>
@@ -30,7 +30,6 @@ $google_api_key = 'AIzaSyAuVXA62gxQgGtLg7jEf0hQnFgYHzxJO48'; // Replace with you
         .location-type:hover {
             background-color: #3267d6;
         }
-        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -106,7 +105,6 @@ $google_api_key = 'AIzaSyAuVXA62gxQgGtLg7jEf0hQnFgYHzxJO48'; // Replace with you
         let currentPosition;
         let directionsService;
         let directionsRenderer;
-        let currentRoute;
         let cityCircle;
         let geocoder;
 
@@ -131,10 +129,9 @@ $google_api_key = 'AIzaSyAuVXA62gxQgGtLg7jEf0hQnFgYHzxJO48'; // Replace with you
             infowindow = new google.maps.InfoWindow();
             service = new google.maps.places.PlacesService(map);
             directionsService = new google.maps.DirectionsService();
-            directionsRenderer = new google.maps.DirectionsRenderer({
-                map: map,
-                suppressMarkers: true
-            });
+            
+            // Initialize directionsRenderer
+            initializeDirectionsRenderer();
 
             // Set Makati City circular boundary
             setMakatiCircle(makatiCenter);
@@ -181,6 +178,19 @@ $google_api_key = 'AIzaSyAuVXA62gxQgGtLg7jEf0hQnFgYHzxJO48'; // Replace with you
             }
         }
 
+        function initializeDirectionsRenderer() {
+            // Remove existing directionsRenderer if it exists
+            if (directionsRenderer) {
+                directionsRenderer.setMap(null);
+            }
+            
+            // Create new directionsRenderer
+            directionsRenderer = new google.maps.DirectionsRenderer({
+                map: map,
+                suppressMarkers: true
+            });
+        }
+
         function setMakatiCircle(center) {
             if (cityCircle) {
                 cityCircle.setMap(null);
@@ -201,6 +211,9 @@ $google_api_key = 'AIzaSyAuVXA62gxQgGtLg7jEf0hQnFgYHzxJO48'; // Replace with you
         }
 
         function calculateRoute(destination, locationName) {
+            // Clear existing route
+            initializeDirectionsRenderer();
+
             const request = {
                 origin: currentPosition,
                 destination: destination,
@@ -209,12 +222,7 @@ $google_api_key = 'AIzaSyAuVXA62gxQgGtLg7jEf0hQnFgYHzxJO48'; // Replace with you
 
             directionsService.route(request, (result, status) => {
                 if (status === 'OK') {
-                    if (currentRoute) {
-                        currentRoute.setMap(null);
-                    }
-                    
                     directionsRenderer.setDirections(result);
-                    currentRoute = directionsRenderer;
 
                     const route = result.routes[0].legs[0];
                     const routeInfo = document.getElementById('route-info');
@@ -232,9 +240,8 @@ $google_api_key = 'AIzaSyAuVXA62gxQgGtLg7jEf0hQnFgYHzxJO48'; // Replace with you
 
         function searchNearby(type) {
             clearMarkers();
-            if (currentRoute) {
-                currentRoute.setMap(null);
-            }
+            initializeDirectionsRenderer();
+            document.getElementById('route-info').innerHTML = '';
             
             const request = {
                 location: currentPosition,
@@ -297,7 +304,7 @@ $google_api_key = 'AIzaSyAuVXA62gxQgGtLg7jEf0hQnFgYHzxJO48'; // Replace with you
                             ${place.opening_hours?.open_now ? 'Open Now' : 'Closed/Unknown'}<br>
                             <button onclick="calculateRoute(
                                 {lat: ${place.geometry.location.lat()}, lng: ${place.geometry.location.lng()}},
-                                '${place.name}'
+                                '${place.name.replace(/'/g, "\\'")}'
                             )">Show Route</button>
                         </div>`
                     );
@@ -325,7 +332,6 @@ $google_api_key = 'AIzaSyAuVXA62gxQgGtLg7jEf0hQnFgYHzxJO48'; // Replace with you
         function clearMarkers() {
             markers.forEach(marker => marker.setMap(null));
             markers = [];
-            document.getElementById('route-info').innerHTML = '';
         }
 
         function showModal() {
