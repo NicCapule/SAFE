@@ -1,0 +1,32 @@
+{
+  "devDependencies": {
+    "vite": "^6.1.0"
+  },
+  "name": "safe",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "esbuild": "^0.24.2",
+    "nanoid": "^3.3.8",
+    "picocolors": "^1.1.1",
+    "postcss": "^8.5.2",
+    "rollup": "^4.34.7",
+    "source-map-js": "^1.2.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NicCapule/SAFE.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/NicCapule/SAFE/issues"
+  },
+  "homepage": "https://github.com/NicCapule/SAFE#readme"
+}
