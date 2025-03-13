@@ -47,26 +47,47 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['help_type'])) {
 <html>
 <head>
     <title>User Dashboard</title>
-    <style>
-        #map {
-            height: 500px;
-            width: 100%;
-            margin-bottom: 20px;
-        }
-        .controls {
-            margin: 20px 0;
-            display: flex;
-            gap: 10px;
-        }
-        #route-info {
-            margin: 10px 0;
-            padding: 10px;
-            background-color: #f0f0f0;
-            border-radius: 5px;
-        }
-    </style>
+        <style>
+            #map {
+                height: 500px;
+                width: 100%;
+                margin-bottom: 20px;
+            }
+            .controls {
+                margin: 20px 0;
+                display: flex;
+                gap: 10px;
+            }
+            #route-info {
+                margin: 10px 0;
+                padding: 10px;
+                background-color: #f0f0f0;
+                border-radius: 5px;
+            }
+            body {
+                background: rgb(128,0,32);
+            }
+        </style>
 </head>
 <body onload="initMap()">
+    <style>
+        h2 {
+            color: white;
+            font-family:verdana;
+        }
+        h3 {
+            color: white;
+            font-family:verdana;
+        }
+        p {
+            color: white;
+            font-family:verdana;
+        }
+        a {
+            color: white;
+            font-family:verdana;
+        }
+    </style>
     <h2>Welcome, <?php echo $_SESSION['user_name']; ?>!</h2>
 
     <div id="map"></div>
@@ -97,6 +118,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['help_type'])) {
         <button type="submit" <?php echo ($system_status === 'Busy') ? 'disabled' : ''; ?>>Submit Request</button>
     </form>
 
+    <br>
     <a href="../auth/logout.php">Logout</a>
 
     <?php if ($show_popup) { ?>

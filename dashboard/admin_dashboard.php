@@ -44,8 +44,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['toggle_status'])) {
 <html>
 <head>
     <title>Admin Dashboard</title>
+        <style>
+            body {
+                background: rgb(128,0,32);
+            }
+        </style>
 </head>
 <body>
+    <style>
+        h2 {
+            color: white;
+            font-family:verdana;
+        }
+        h3 {
+            color: white;
+            font-family:verdana;
+        }
+        p {
+            color: white;
+            font-family:verdana;
+        }
+        a {
+            color: white;
+            font-family:verdana;
+        }
+        table {
+            color: white;
+            font-family:verdana;
+        }
+    </style>
     <h2>Welcome, <?php echo $_SESSION['user_name']; ?>!</h2>
 
     <h3>System Status: <span id="status"><?php echo $status; ?></span></h3>
@@ -106,7 +133,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['toggle_status'])) {
             </tr>
         <?php } ?>
     </table>
-
+    <br>
     <a href="../auth/logout.php">Logout</a>
 </body>
 </html>

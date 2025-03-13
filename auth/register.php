@@ -23,13 +23,59 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <html>
 <head>
     <title>Register</title>
-</head>
+    <link rel="stylesheet" href="../assets/stylesheet1.css">
+    </head>
 <body>
-    <form method="POST">
-        <input type="text" name="name" placeholder="Full Name" required><br>
-        <input type="email" name="email" placeholder="Email" required><br>
-        <input type="password" name="password" placeholder="Password" required><br>
-        <button type="submit">Register</button>
-    </form>
+    <div class="limiter">
+        <div class="container-login100">
+            <div class="wrap-login100">
+                <div class="login100-form-title">
+                    Register
+                </div>
+                
+                <form class="login100-form validate-form" method="POST">
+                    <div class="wrap-input100 validate-input" data-validate="Full Name is required">
+                        <input class="input100" type="text" name="name" placeholder="Full Name">
+                        <span class="focus-input100" data-placeholder="&#128100;"></span>
+                    </div>
+
+                    <div class="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
+                        <input class="input100" type="email" name="email" placeholder="Email">
+                        <span class="focus-input100" data-placeholder="&#9993;"></span>
+                    </div>
+
+                    <div class="wrap-input100 validate-input" data-validate="Password is required">
+                        <input class="input100" type="password" name="password" placeholder="Password">
+                        <span class="focus-input100" data-placeholder="&#128274;"></span>
+                    </div>
+
+                    <div class="container-login100-form-btn">
+                        <button class="login100-form-btn" type="submit">
+                            Register
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add has-val class to inputs that have value
+        const inputs = document.querySelectorAll('.input100');
+        inputs.forEach(input => {
+            input.addEventListener('blur', function() {
+                if(this.value.trim() !== "") {
+                    this.classList.add('has-val');
+                } else {
+                    this.classList.remove('has-val');
+                }
+            });
+            
+            // Check on page load
+            if(input.value.trim() !== "") {
+                input.classList.add('has-val');
+            }
+        });
+    </script>
 </body>
 </html>
