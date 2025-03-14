@@ -47,104 +47,116 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['help_type'])) {
 <html>
 <head>
     <title>User Dashboard</title>
-        <style>
-            #map {
-                height: 500px;
-                width: 100%;
-                margin-bottom: 20px;
-            }
-            .controls {
-                margin: 20px 0;
-                display: flex;
-                gap: 10px;
-            }
-            #route-info {
-                margin: 10px 0;
-                padding: 10px;
-                background-color: #f0f0f0;
-                border-radius: 5px;
-            }
-            body {
-                background: rgb(128,0,32);
-            }
-            .station-list {
-                margin-top: 15px;
-                background-color: rgba(255,255,255,0.8);
-                padding: 10px;
-                border-radius: 5px;
-                max-height: 200px;
-                overflow-y: auto;
-            }
-            .station-item {
-                padding: 5px;
-                margin-bottom: 5px;
-                border-bottom: 1px solid #ddd;
-                cursor: pointer;
-            }
-            .station-item:hover {
-                background-color: #f0f0f0;
-            }
-            .station-name {
-                font-weight: bold;
-            }
-            .station-info {
-                color: #333;
-                font-size: 0.9em;
-            }
-        </style>
-</head>
-<body>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/stylist.css">
     <style>
-        h2 {
-            color: white;
-            font-family:verdana;
+        /* Ensure the map has a defined height and width */
+        #map {
+            height: 500px;
+            width: 100%;
+            margin-bottom: 20px;
+            border-radius: var(--border-radius);
         }
-        h3 {
-            color: white;
-            font-family:verdana;
+
+        /* Style for the radius slider and button */
+        .controls {
+            margin: 20px 0;
+            display: flex;
+            gap: 10px;
+            align-items: center;
         }
-        p {
-            color: white;
-            font-family:verdana;
+
+        /* Style for the route info display */
+        #route-info {
+            margin: 10px 0;
+            padding: var(--padding);
+            background-color: var(--secondary-color);
+            border-radius: var(--border-radius);
+            color: var(--text-color);
         }
-        a {
-            color: white;
-            font-family:verdana;
+
+        /* Style for the station list */
+        .station-list {
+            margin-top: 15px;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: var(--padding);
+            border-radius: var(--border-radius);
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .station-item {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid var(--primary-color);
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .station-item:hover {
+            background-color: var(--primary-color);
+            color: var(--text-color);
+        }
+
+        .station-name {
+            font-weight: bold;
+        }
+
+        .station-info {
+            color: var(--accent-color);
+            font-size: 0.9em;
         }
     </style>
-    <h2>Welcome, <?php echo $_SESSION['user_name']; ?>!</h2>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Welcome Section -->
+        <div class="dashboard-section welcome-section">
+            <h2>Welcome, <?php echo $_SESSION['user_name']; ?>!</h2>
+        </div>
 
-    <div id="map"></div>
-    <p>Adjust Search Radius: 
-        <input type="range" id="radiusSlider" min="0.5" max="5" step="0.1" value="2" 
-               oninput="updateRadius(this.value)">
-        <span id="radiusValue">2 km</span>
-    </p>
-    <button onclick="searchFireStations()">Show Nearest Fire Station Route</button>
-    <div id="route-info"></div>
-    <div id="stations-list" class="station-list" style="display: none;"></div>
+        <!-- Map Section -->
+        <div class="dashboard-section map-section">
+            <div id="map"></div>
+            <div class="controls">
+                <p>Adjust Search Radius: 
+                    <input type="range" id="radiusSlider" min="0.5" max="5" step="0.1" value="2" 
+                           oninput="updateRadius(this.value)">
+                    <span id="radiusValue">2 km</span>
+                </p>
+                <button onclick="searchFireStations()">Show Nearest Fire Station Route</button>
+            </div>
+            <div id="route-info"></div>
+            <div id="stations-list" class="station-list" style="display: none;"></div>
+        </div>
 
-    <h3>Request Help</h3>
-    <?php 
-    if ($system_status === "Busy") {
-        echo "<p class='system-busy'>🚫 The system is currently busy. You cannot submit requests at this time.</p>";
-    }
-    echo $message;
-    ?>
-    <form method="POST" id="helpForm">
-        <select name="help_type" required>
-            <option value="Fire">Fire</option>
-            <option value="Rescue">Rescue</option>
-            <option value="Other">Other</option>
-        </select>
-        <input type="text" name="nearest_station" id="nearest_station" placeholder="Nearest Station" readonly>
-        <input type="hidden" name="user_lat" id="user_lat">
-        <input type="hidden" name="user_lng" id="user_lng">
-        <button type="submit" <?php echo ($system_status === 'Busy') ? 'disabled' : ''; ?>>Submit Request</button>
-    </form>
+        <!-- Request Help Section -->
+        <div class="dashboard-section request-help-section">
+            <h3>Request Help</h3>
+            <?php 
+            if ($system_status === "Busy") {
+                echo "<p class='system-busy'>🚫 The system is currently busy. You cannot submit requests at this time.</p>";
+            }
+            echo $message;
+            ?>
+            <form method="POST" id="helpForm">
+                <select name="help_type" required>
+                    <option value="Fire">Fire</option>
+                    <option value="Rescue">Rescue</option>
+                    <option value="Other">Other</option>
+                </select>
+                <input type="text" name="nearest_station" id="nearest_station" placeholder="Nearest Station" readonly>
+                <input type="hidden" name="user_lat" id="user_lat">
+                <input type="hidden" name="user_lng" id="user_lng">
+                <button type="submit" <?php echo ($system_status === 'Busy') ? 'disabled' : ''; ?>>Submit Request</button>
+            </form>
+        </div>
 
-    <br>
-    <a href="../auth/logout.php">Logout</a>
+        <!-- Logout Section -->
+        <div class="dashboard-section logout-section">
+            <a href="../auth/logout.php">Logout</a>
+        </div>
+    </div>
 
     <?php if ($show_popup) { ?>
     <script>
@@ -153,6 +165,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['help_type'])) {
     <?php } ?>
 
     <script>
+        // Your existing JavaScript code here
         let map, userMarker, radiusCircle, directionsService, directionsRenderer;
         let radius = 2000;
         let fireStationMarkers = [];
