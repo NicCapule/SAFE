@@ -1,0 +1,190 @@
+:root {
+    --primary-color: rgb(102, 8, 13); /* Riot Games red */
+    --secondary-color: #1D1D1D; /* Dark gray */
+    --background-color: #121212; /* Dark background */
+    --text-color: #FFFFFF; /* White text */
+    --accent-color: #FFD700; /* Gold accent */
+    --border-radius: 8px;
+    --padding: 15px;
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: var(--padding);
+}
+
+h2, h3, p, a {
+    color: var(--text-color);
+    font-family: 'Roboto', sans-serif;
+}
+
+h2 {
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+h3 {
+    font-size: 1.5em;
+    margin-bottom: 15px;
+}
+
+p {
+    font-size: 1em;
+    margin-bottom: 10px;
+}
+
+a {
+    color: var(--accent-color);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+#map {
+    height: 500px;
+    width: 100%;
+    margin-bottom: 20px;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+}
+
+.controls {
+    margin: 20px 0;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+#route-info {
+    margin: 10px 0;
+    padding: var(--padding);
+    background-color: var(--secondary-color);
+    border-radius: var(--border-radius);
+    color: var(--text-color);
+}
+
+.station-list {
+    margin-top: 15px;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: var(--padding);
+    border-radius: var(--border-radius);
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.station-item {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--primary-color);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.station-item:hover {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+}
+
+.station-name {
+    font-weight: bold;
+}
+
+.station-info {
+    color: var(--accent-color);
+    font-size: 0.9em;
+}
+
+button {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    border: none;
+    padding: 10px 20px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: var(--accent-color);
+    color: var(--background-color);
+}
+
+select, input[type="text"] {
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+    border: 1px solid var(--primary-color);
+    padding: 10px;
+    border-radius: var(--border-radius);
+    margin-right: 10px;
+}
+
+.system-busy {
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+#radiusSlider {
+    width: 100%;
+    max-width: 300px;
+}
+
+#radiusValue {
+    margin-left: 10px;
+    font-weight: bold;
+}
+
+.dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.dashboard-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: var(--secondary-color);
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.welcome-section {
+    text-align: center;
+}
+
+.map-section {
+    padding: 20px;
+}
+
+.request-help-section {
+    padding: 20px;
+}
+
+.logout-section {
+    text-align: center;
+    padding: 20px;
+}
+
+/* Additional styles for specific elements within sections */
+.map-section p {
+    margin-bottom: 15px;
+}
+
+.request-help-section form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.request-help-section select, .request-help-section input[type="text"] {
+    width: 100%;
+    max-width: 300px;
+}
+
+.request-help-section button {
+    align-self: flex-start;
+}
