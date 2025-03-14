@@ -43,12 +43,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['toggle_status'])) {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Admin Dashboard</title>
+    <title>BFP: SAFE | Admin Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../assets/stylist.css">
     <style>
         :root {
-            --primary-color:rgb(102, 8, 13); /* Riot Games red */
+            --primary-color:rgb(196, 30, 58); /* Riot Games red */
             --secondary-color: #1D1D1D; /* Dark gray */
             --background-color: #121212; /* Dark background */
             --text-color: #FFFFFF; /* White text */
@@ -118,16 +118,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['toggle_status'])) {
             background-color: var(--secondary-color);
         }
 
-        tr:hover {
-            background-color: var(--primary-color);
-            color: var(--text-color);
-        }
-
         button {
             background-color: var(--primary-color);
             color: var(--text-color);
             border: none;
-            padding: 10px 20px;
+            padding: 8px 20px;
             border-radius: var(--border-radius);
             cursor: pointer;
             transition: background-color 0.3s ease;
@@ -148,7 +143,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['toggle_status'])) {
         }
 
         .dashboard-container {
-            max-width: 1200px;
+            max-width: 1500px;
             margin: 0 auto;
             padding: 20px;
         }
@@ -232,39 +227,58 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['toggle_status'])) {
 
         <!-- Help Requests Section -->
         <div class="dashboard-section help-requests-section">
-            <h3>Help Requests</h3>
-            <table>
-                <tr><th>ID</th><th>User</th><th>Help Type</th><th>Timestamp</th><th>Status</th><th>Station Name</th><th>User Lat</th><th>User Lng</th><th>Action</th></tr>
-                <?php while ($row = $requests->fetch_assoc()) { ?>
-                    <tr>
-                        <td><?php echo $row['id']; ?></td>
-                        <td><?php echo $row['user']; ?></td>
-                        <td><?php echo $row['help_type']; ?></td>
-                        <td><?php echo $row['timestamp']; ?></td>
-                        <td><?php echo $row['status']; ?></td>
-                        <td><?php echo $row['station_name']; ?></td>
-                        <td><?php echo $row['user_lat']; ?></td>
-                        <td><?php echo $row['user_lng']; ?></td>
-                        <td>
-                            <form method="POST" action="../admin/manage_requests.php">
-                                <input type="hidden" name="request_id" value="<?php echo $row['id']; ?>">
-                                <select name="status">
-                                    <option value="Pending" <?php echo ($row['status'] == 'Pending') ? 'selected' : ''; ?>>Pending</option>
-                                    <option value="In Progress" <?php echo ($row['status'] == 'In Progress') ? 'selected' : ''; ?>>In Progress</option>
-                                    <option value="Resolved" <?php echo ($row['status'] == 'Resolved') ? 'selected' : ''; ?>>Resolved</option>
-                                </select>
-                                <button type="submit">Update</button>
-                            </form>
-                        </td>
-                    </tr>
-                <?php } ?>
-            </table>
-        </div>
+        <h3>Help Requests</h3>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>User</th>
+                <th>Help Type</th>
+                <th>Timestamp</th>
+                <th>Status</th>
+                <th>Station Name</th>
+                <th>User Lat</th>
+                <th>User Lng</th>
+                <th>Action</th>
+            </tr>
+            <?php while ($row = $requests->fetch_assoc()) { ?>
+                <tr>
+                    <td><?php echo $row['id']; ?></td>
+                    <td><?php echo $row['user']; ?></td>
+                    <td><?php echo $row['help_type']; ?></td>
+                    <td><?php echo $row['timestamp']; ?></td>
+                    <td><?php echo $row['status']; ?></td>
+                    <td><?php echo $row['station_name']; ?></td>
+                    <td><?php echo $row['user_lat']; ?></td>
+                    <td><?php echo $row['user_lng']; ?></td>
+                    <td>
+                        <!-- Update Status Form -->
+                        <form method="POST" action="../admin/manage_requests.php" style="display:inline-block;">
+                            <input type="hidden" name="request_id" value="<?php echo $row['id']; ?>">
+                            <select name="status" class="status-dropdown <?php echo ($row['status'] == 'Pending') ? 'pending-dropdown' : ''; ?>">
+                                <option value="Pending" <?php echo ($row['status'] == 'Pending') ? 'selected' : ''; ?>>Pending</option>
+                                <option value="In Progress" <?php echo ($row['status'] == 'In Progress') ? 'selected' : ''; ?>>In Progress</option>
+                                <option value="Resolved" <?php echo ($row['status'] == 'Resolved') ? 'selected' : ''; ?>>Resolved</option>
+                            </select>
+                            <button type="submit">Update</button>
+                        </form>
+
+                        <!-- Remove Request Form -->
+                        <form method="POST" action="../admin/manage_requests.php" style="display:inline-block;">
+                            <input type="hidden" name="delete_request_id" value="<?php echo $row['id']; ?>">
+                            <button type="submit" style="margin-left: 5px">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+            <?php } ?>
+        </table>
+    </div>
 
         <!-- Logout Section -->
-        <div class="dashboard-section logout-section">
-            <a href="../auth/logout.php">Logout</a>
-        </div>
+            <form action="../auth/logout.php" method="post" style="display: inline-block">
+                <button type="submit" style="width:120px; height:40px; margin-left:2px; font-weight: bold">
+                    LOGOUT
+                </button>
+            </form>
     </div>
 </body>
 </html>

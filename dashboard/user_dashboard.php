@@ -16,10 +16,9 @@ $system_status = $status_row ? $status_row['status'] : 'Unknown';
 
 // Handle help request submission
 $message = "";
-$show_popup = false;
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['help_type'])) {
     if ($system_status === "Busy") {
-        $message = "<p style='color: red;'>🚫 System is busy. Cannot submit request.</p>";
+        $message = "<p style='color: #FFD700;'>🚫 System is busy. Cannot submit request.</p>";
     } else {
         $user = $_SESSION['user_name'];
         $help_type = $_POST['help_type'];
@@ -31,14 +30,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['help_type'])) {
             $stmt = $conn->prepare("INSERT INTO requests (user, help_type, status, station_name, user_lat, user_lng) VALUES (?, ?, 'Pending', ?, ?, ?)");
             $stmt->bind_param("sssss", $user, $help_type, $station_name, $user_lat, $user_lng);
             if ($stmt->execute()) {
-                $show_popup = true; 
+                $message = "<p style='color: #AAFF00;'>✅ Request sent successfully!</p>";
             } else {
-                $message = "<p style='color: red;'>❌ Error submitting request.</p>";
+                $message = "<p style='color: #FFD700;'>❌ Error submitting request.</p>";
             }
             $stmt->close();
-        } else {
-            $message = "<p style='color: red;'>⚠ All fields must be filled out.</p>";
-        }
+        } 
     }
 }
 ?>
@@ -46,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['help_type'])) {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>User Dashboard</title>
+    <title>BFP: SAFE | Admin Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../assets/stylist.css">
     <style>
@@ -70,7 +67,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['help_type'])) {
         #route-info {
             margin: 10px 0;
             padding: var(--padding);
-            background-color: var(--secondary-color);
+            background-color: rgba(255, 255, 255, 0.1);
             border-radius: var(--border-radius);
             color: var(--text-color);
         }
@@ -79,9 +76,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['help_type'])) {
         .station-list {
             margin-top: 15px;
             background-color: rgba(255, 255, 255, 0.1);
-            padding: var(--padding);
+            padding: 1px 20px 20px 20px;
             border-radius: var(--border-radius);
-            max-height: 200px;
+            max-height: 400px;
             overflow-y: auto;
         }
 
@@ -109,7 +106,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['help_type'])) {
     </style>
 </head>
 <body>
-    <div class="dashboard-container">
+    <div class="dashboard-container">        
         <!-- Welcome Section -->
         <div class="dashboard-section welcome-section">
             <h2>Welcome, <?php echo $_SESSION['user_name']; ?>!</h2>
@@ -117,13 +114,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['help_type'])) {
 
         <!-- Map Section -->
         <div class="dashboard-section map-section">
+            <h2>Map of Nearby Firestations</h2>
             <div id="map"></div>
             <div class="controls">
-                <p>Adjust Search Radius: 
+                <p>Adjust Search Radius: </p>
                     <input type="range" id="radiusSlider" min="0.5" max="5" step="0.1" value="2" 
                            oninput="updateRadius(this.value)">
                     <span id="radiusValue">2 km</span>
-                </p>
+                
                 <button onclick="searchFireStations()">Show Nearest Fire Station Route</button>
             </div>
             <div id="route-info"></div>
@@ -135,34 +133,40 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['help_type'])) {
             <h3>Request Help</h3>
             <?php 
             if ($system_status === "Busy") {
-                echo "<p class='system-busy'>🚫 The system is currently busy. You cannot submit requests at this time.</p>";
+                echo "<p class='system-busy' style'color= #FFD700'>🚫 The system is currently busy. You cannot submit requests at this time.</p>";
             }
-            echo $message;
             ?>
             <form method="POST" id="helpForm">
-                <select name="help_type" required>
-                    <option value="Fire">Fire</option>
-                    <option value="Rescue">Rescue</option>
-                    <option value="Other">Other</option>
-                </select>
-                <input type="text" name="nearest_station" id="nearest_station" placeholder="Nearest Station" readonly>
-                <input type="hidden" name="user_lat" id="user_lat">
-                <input type="hidden" name="user_lng" id="user_lng">
-                <button type="submit" <?php echo ($system_status === 'Busy') ? 'disabled' : ''; ?>>Submit Request</button>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <select name="help_type" required style="width: 100px; padding: 10px;">
+                        <option value="Fire">Fire</option>
+                        <option value="Rescue">Rescue</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    
+                    <input type="text" name="nearest_station" id="nearest_station" 
+                        placeholder="Nearest Station" readonly 
+                        style="flex: 1; min-width: 390px; padding: 10px;">
+                    <input type="hidden" name="user_lat" id="user_lat">
+                    <input type="hidden" name="user_lng" id="user_lng">
+
+                    <button type="submit" style="white-space: nowrap; padding: 10px;" <?php echo ($system_status === 'Busy') ? 'disabled' : ''; ?>>Submit Request</button>
+                </div>
             </form>
+
+            <div id="message-container">
+                <?php echo $message; ?>
+            </div>
         </div>
+            
 
         <!-- Logout Section -->
-        <div class="dashboard-section logout-section">
-            <a href="../auth/logout.php">Logout</a>
-        </div>
+        <form action="../auth/logout.php" method="post" style="display: inline-block">
+            <button type="submit" style="width:120px; height:40px; margin-left:2px; font-weight: bold">
+                LOGOUT
+            </button>
+        </form>
     </div>
-
-    <?php if ($show_popup) { ?>
-    <script>
-        alert("✅ Request sent successfully!");
-    </script>
-    <?php } ?>
 
     <script>
         // Your existing JavaScript code here
@@ -226,12 +230,48 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['help_type'])) {
                 
                 // Form submission event handler
                 document.getElementById('helpForm').addEventListener('submit', function(e) {
+                    // Always prevent default form submission first
+                    e.preventDefault();
+                    
+                    // Check if nearest station is selected
                     if (!document.getElementById('nearest_station').value) {
-                        e.preventDefault();
-                        alert("Please wait while we find the nearest fire station.");
+                        document.getElementById('message-container').innerHTML = "<p style='color: #FFD700;'>⏳ Please wait while we find the nearest fire station.</p>";
+                        
+                        // Set a timeout to clear the message after 2 seconds and show new message
+                        setTimeout(function() {
+                            document.getElementById('message-container').innerHTML = "<p style='color: #AAFF00;'>✅ You can now submit your request.</p>";
+                        }, 1800);
+                        
                         searchFireStations();
                         return false;
                     }
+                    
+                    // If we have a nearest station, proceed with form submission
+                    const formData = new FormData(this);
+                    
+                    // Submit the form using fetch API
+                    fetch('user_dashboard.php', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.text())
+                    .then(html => {
+                        // Extract just the message from the response
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
+                        const messageContainer = doc.getElementById('message-container');
+                        
+                        // Update only the message container
+                        document.getElementById('message-container').innerHTML = messageContainer.innerHTML;
+                        
+                        // If successful (check for success message)
+                        if (messageContainer.innerHTML.includes('✅')) {
+                            // Wait 2 seconds before refreshing
+                            setTimeout(function() {
+                                window.location.reload();
+                            }, 2000);
+                        }
+                    });
                 });
             }, error => {
                 console.error('Geolocation error:', error);
@@ -406,7 +446,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['help_type'])) {
                     // Highlight the nearest station in the list
                     allFireStations.forEach(item => {
                         if (item.station.place_id === nearestStation.station.place_id) {
-                            item.element.style.backgroundColor = '#ffe0e0';
+                            item.element.style.backgroundColor = 'rgb(196, 30, 58)';
                             item.element.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                         }
                     });

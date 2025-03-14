@@ -2,10 +2,6 @@
 session_start();
 require '../config/config.php';
 
-if (!isset($_SESSION['user_id']) || !$_SESSION['is_admin']) {
-    exit("Unauthorized access");
-}
-
 // Add User
 if (isset($_POST['add_user'])) {
     $name = trim($_POST['name']);

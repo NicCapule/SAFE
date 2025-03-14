@@ -2,6 +2,8 @@
 session_start();
 require '../config/config.php';
 
+$error_message = ""; // Initialize error message
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = trim($_POST['email']);
     $password = $_POST['password'];
@@ -27,10 +29,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
             exit;
         } else {
-            echo "Invalid password.";
+            $error_message = "Invalid password.";
         }
     } else {
-        echo "User not found.";
+        $error_message = "User not found.";
     }
     $stmt->close();
 }
@@ -39,15 +41,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Login</title>
+    <title>BFP: SAFE | Login</title>
     <link rel="stylesheet" href="../assets/stylesheet1.css">
-    </head>
+</head>
 <body>
     <div class="limiter">
         <div class="container-login100">
             <div class="wrap-login100">
+                <div class="logo-header">
+                    <img src="../assets/bfp.jpg" alt="BFP Logo" class="logo-image">
+                    <div>
+                        <span class="main-title">BFP: SAFE</span>
+                        <br>
+                        <span class="sub-title">Security Assistance, Facility, and Emergency</span>
+                    </div>
+                </div>
+
                 <div class="login100-form-title">
-                    Login
+                    Login Form
                 </div>
                 
                 <form class="login100-form validate-form" method="POST">
@@ -61,10 +72,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <span class="focus-input100" data-placeholder="&#128274;"></span>
                     </div>
 
+                    <!-- Display error message here -->
+                    <?php if (!empty($error_message)): ?>
+                        <p style="color: red; text-align: center; margin-top: 5px;"><?php echo $error_message; ?></p>
+                    <?php endif; ?>
+
                     <div class="container-login100-form-btn">
                         <button class="login100-form-btn" type="submit">
                             Login
                         </button>
+                    </div>
+
+                    <!-- Registration link -->
+                    <div style="text-align: center; margin-top: 15px;">
+                        <p>Not yet a User? <a href="../auth/register.php" style="color: rgb(196, 30, 58); text-decoration: none; font-weight: bold;">Register Now!</a></p>
                     </div>
                 </form>
             </div>
@@ -82,7 +103,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     this.classList.remove('has-val');
                 }
             });
-            
+
             // Check on page load
             if(input.value.trim() !== "") {
                 input.classList.add('has-val');
